@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qor dashboard</title>
+   
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+       canvas {
+        border: 1px solid #ddd;
+      }
+      /* Navbar container */
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        background-color: #0077c9;
+        color: #fff;
+        padding: 10px 20px;
+      }
+    
+      /* Dropdown container */
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+    
+      /* Dropdown button */
+      .dropbtn {
+        background-color: #0077c9;
+        color: #fff;
+        padding: 10px 15px;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+    
+      /* Dropdown content */
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        z-index: 1;
+        background-color: #fff;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        border-radius: 5px;
+        padding: 12px 16px;
+      }
+    
+      /* Show dropdown content on hover */
+      .dropdown:hover .dropdown-content {
+        display: block;
+      }
+    
+      /* Dropdown link */
+      .dropdown-content a {
+        color: #0077c9;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+      }
+    
+      /* Change color of dropdown links on hover */
+      .dropdown-content a:hover {
+        background-color: #ddd;
+      }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="navbar">
+          <div class="dropdown">
+            <form method="post" action="/">
+              {%csrf_token%}
+            <button class="dropbtn" type="submit" name="btn1">Suites</button>
+            <div class="dropdown-content">
+              <a href="#">ppro_abspa</a>
+              <a href="#">ppro_bbspa</a>
+              <a href="#">ppro_cbspa</a>
+            </form>
+            </div>
+          </div>
+          <div class="dropdown">
+            <button class="dropbtn">Start date</button>
+            <div class="dropdown-content">
+              <input type="date" id="date-picker-1" onchange="alertDate()">
+            </div>
+          </div>
+          <div class="dropdown">
+            <button class="dropbtn">End date</button>
+            <div class="dropdown-content">
+              <input type="date" id="date-picker-2" onchange="alertDate()">
+            </div>
+          </div>
+          
+      </nav>
+      <div>
+        <form method="post" action="/">
+          {% csrf_token%}
+          
+          <input type="text" id="days" name="days" placeholder="Enter the number of days" class="bg-warning border-danger">
+          <button id="add" type="submit" name="btn3"   class="btn btn-outline-warning my-4 mx-2">Draw graph </button>
+        </form>
+     
+        <script>
+          var dates_json={{dates|safe}}
+          var values_json={{values|safe}}
+
+        </script>
+      </div>  
+          <!-- Chart canvas -->
+      <canvas id="lineChart"></canvas>
+      
+      <script>
+        
+        let ctx = document.getElementById('lineChart').getContext('2d');
+        let chart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: [],
+            datasets: [{
+              label: 'graph for qor data',
+              data: [],
+              backgroundColor: 'rgba(255, 99, 132, 0.2)',
+              borderColor: 'rgba(255, 99, 132, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true
+                }
+              }]
+            }
+          }
+        });
+  
+        // Function to add data to the chart
+        function addData(xaxis,yaxis) {
+         console.log("yes")
+          console.log(xaxis)
+          console.log(yaxis)
+          chart.data.labels=xaxis
+          chart.data.datasets[0].data=yaxis
+      
+         chart.update()
+        }
+        
+        addData(dates_json,values_json)
+        
+      </script>
+      <script src="index.js"></script>
+  </body>
+</html>
